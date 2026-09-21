@@ -32,15 +32,16 @@ std::ostream& operator<<(std::ostream& os, const Cadena& cadena){
   return os;
 }
 
+
 //CLASE ALFABETO
+std::set<std::string> Alfabeto::GetAlfabeto() const{
+  return alfabeto_;
+}
+
 std::istream& operator>>(std::istream& is, Alfabeto& alfabeto){
   std::string cadena;
-  while(is >> cadena){
-    for(size_t i = 0; i < cadena.size(); i++){
-      alfabeto.alfabeto_.insert(cadena[i]);
-    }
-  }
-  is.clear();
+  is >> cadena;
+  alfabeto.alfabeto_.insert(cadena);
   return is;
 }
 
@@ -54,3 +55,19 @@ std::ostream& operator<<(std::ostream& os, const Alfabeto& alfabeto){
 }
 
 
+
+//CLASE LENGUAJE
+void Lenguaje::InsertarCadena(const Cadena& cadena){
+  lenguaje_.insert(cadena.GetCadena());
+}
+
+void Lenguaje::InsertarAlfabeto(Alfabeto& alfabeto_parametro){
+  for(const auto& cadena : alfabeto_parametro.GetAlfabeto()){
+    alfabeto_lenguaje_.insert(cadena);
+  }
+}
+
+
+std::ostream& operator<<(std::ostream& os, const Lenguaje& lenguaje){
+  
+}

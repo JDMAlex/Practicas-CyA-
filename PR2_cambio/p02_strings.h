@@ -34,31 +34,38 @@ class Cadena{
   std::string cadena_;
 };
 
-class Lenguaje{
-  public:
-    //constructor
-    Lenguaje() = default;
-    //Getter
-    std::set<Cadena> GetLenguaje() const;
-
-    //Metodos
-
-  private:
-  std::set<Cadena> lenguaje_;
-};
-
 class Alfabeto{
   public:
     //constructor
     Alfabeto() = default;
+    //Getter
+    std::set<std::string> GetAlfabeto() const;
     //Metodo
     friend std::istream& operator>>(std::istream& is, Alfabeto& alfabeto);
     friend std::ostream& operator<<(std::ostream& os, const Alfabeto& alfabeto);
 
   private:
-  std::set<char> alfabeto_;
-  char simbolo_;
+  std::set<std::string> alfabeto_;
 };
+
+
+class Lenguaje{
+  public:
+    //constructor
+    Lenguaje() = default;
+    //Getter
+    std::set<std::string> GetLenguaje() const;
+    //Metodos
+    void InsertarCadena(const Cadena& cadena);
+    void InsertarAlfabeto(Alfabeto& alfabeto_parametro);
+    friend std::ostream& operator<<(std::ostream& os, const Lenguaje& lenguaje);
+
+  private:
+  std::set<std::string> lenguaje_;
+  Alfabeto alfabeto_lenguaje_;
+};
+
+
 
 void MostrarInformacion();
 

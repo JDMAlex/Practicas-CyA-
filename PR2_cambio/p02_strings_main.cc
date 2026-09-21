@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
     while(std::getline(fichero_entrada, linea)){
       std::stringstream ss(linea);
       if(ss >> cadena >> alfabeto){
-        lenguaje.GetLenguaje().insert(cadena);
+        lenguaje.InsertarCadena(cadena);
       }
     }
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]){
     }
     switch(opcode){
       case 1:
-      fichero_salida << alfabeto << std::endl;
+
       break;
 
       default:

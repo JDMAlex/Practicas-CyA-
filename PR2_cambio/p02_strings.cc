@@ -18,6 +18,8 @@ void MostrarInformacion(){
 }
 
 //CLASE CADENA
+Cadena::Cadena(const std::string& cadena) : cadena_(cadena) {}
+
 std::string Cadena::GetCadena() const{
   return cadena_;
 }
@@ -32,28 +34,95 @@ std::ostream& operator<<(std::ostream& os, const Cadena& cadena){
   return os;
 }
 
-
-//CLASE ALFABETO
-std::set<std::string> Alfabeto::GetAlfabeto() const{
-  return alfabeto_;
+int Cadena::LongitudCadena(){
+  int longitud = cadena_.size();
+  return longitud;
 }
 
+Cadena Cadena::InversaCadena(){
+  if(cadena_ == "&"){
+    return Cadena("&");
+  }
+  std::string cadena_inversa = cadena_;
+  std::reverse(cadena_inversa.begin(), cadena_inversa.end());
+  Cadena cadena_invertida(cadena_inversa);
+  return cadena_invertida;
+}
+
+Lenguaje Cadena::Prefijo(){
+  Lenguaje lenguaje;
+  Cadena conjunto_con_cadena_vacia("&");
+  if(cadena_ == "&"){
+    return lenguaje;
+  }
+  std::string contenedor;
+  lenguaje.InsertarCadena(conjunto_con_cadena_vacia);
+  for(char simbolo : cadena_){
+    contenedor.push_back(simbolo);
+    Cadena cadena_contenedor(contenedor);
+    lenguaje.InsertarCadena(cadena_contenedor);
+  }
+  return lenguaje;
+}
+
+Lenguaje Cadena::Sufijo(){
+  Lenguaje lenguaje;
+  Cadena conjunto_con_cadena_vacia("&");
+  if(cadena_ == "&"){
+    return lenguaje;
+  }
+  std::string contenedor;
+  lenguaje.InsertarCadena(conjunto_con_cadena_vacia);
+  for(int i = cadena_.size() - 1 ; i >= 0; i--){
+    Cadena cadena_contenedor(cadena_.substr(i));
+    lenguaje.InsertarCadena(cadena_contenedor);
+  }
+  return lenguaje;
+}
+
+bool Cadena::Validacion(Alfabeto alfabeto){
+  return alfabeto.Pertenece_alfabeto(cadena_);
+}
+
+
+
+//CLASE ALFABETO
 std::istream& operator>>(std::istream& is, Alfabeto& alfabeto){
+  alfabeto.alfabeto_.clear();
   std::string cadena;
-  is >> cadena;
-  alfabeto.alfabeto_.insert(cadena);
+  if(is >> cadena){
+    for(char simbolo : cadena){
+      alfabeto.alfabeto_.insert(simbolo);
+    }
+  }
   return is;
 }
 
+std::set<char> Alfabeto::GetAlfabeto(){
+  return alfabeto_;
+}
+
+
 std::ostream& operator<<(std::ostream& os, const Alfabeto& alfabeto){
   os << "{";
+  bool primero = true;
   for(const auto& simbolo : alfabeto.alfabeto_){
-    os << simbolo << ", ";
+    if(!primero) os << ", ";
+    os << simbolo;
+    primero = false;
   }
-  os << "}" << std::endl;
+  os << "}";
   return os;
 }
 
+bool Alfabeto::Pertenece_alfabeto(Cadena cadena){
+  for(char simbolo : cadena.GetCadena()){
+    if(alfabeto_.find(simbolo) == alfabeto_.end()){
+      return false;
+    }
+  }
+  return true;
+}
 
 
 //CLASE LENGUAJE
@@ -61,13 +130,19 @@ void Lenguaje::InsertarCadena(const Cadena& cadena){
   lenguaje_.insert(cadena.GetCadena());
 }
 
-void Lenguaje::InsertarAlfabeto(Alfabeto& alfabeto_parametro){
-  for(const auto& cadena : alfabeto_parametro.GetAlfabeto()){
-    alfabeto_lenguaje_.insert(cadena);
-  }
+std::set<std::string> Lenguaje::GetLenguaje(){
+  return lenguaje_;
 }
 
 
 std::ostream& operator<<(std::ostream& os, const Lenguaje& lenguaje){
-  
+  os << "{";
+  bool primero = true;
+  for(const auto& cadena : lenguaje.lenguaje_){
+    if(!primero) os << ", ";
+    os << cadena;
+    primero = false;
+  }
+  os << "}";
+  return os;
 }

@@ -18,15 +18,25 @@
 #include <set>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
+class Lenguaje;
+
+class Alfabeto;
 
 class Cadena{
   public:
     //constructor
     Cadena() = default;
+    Cadena(const std::string& cadena);
     //Getter
     std::string GetCadena() const;
     //Metodos
+    int LongitudCadena();
+    Cadena InversaCadena();
+    Lenguaje Prefijo();
+    Lenguaje Sufijo();
+    bool Validacion(Alfabeto alfabeto);
     friend std::istream& operator>>(std::istream& is, Cadena& cadena);
     friend std::ostream& operator<<(std::ostream& os, const Cadena& cadena);
 
@@ -39,13 +49,14 @@ class Alfabeto{
     //constructor
     Alfabeto() = default;
     //Getter
-    std::set<std::string> GetAlfabeto() const;
+    std::set<char> GetAlfabeto();
     //Metodo
+    bool Pertenece_alfabeto(Cadena cadena);
     friend std::istream& operator>>(std::istream& is, Alfabeto& alfabeto);
     friend std::ostream& operator<<(std::ostream& os, const Alfabeto& alfabeto);
 
   private:
-  std::set<std::string> alfabeto_;
+  std::set<char> alfabeto_;
 };
 
 
@@ -54,15 +65,13 @@ class Lenguaje{
     //constructor
     Lenguaje() = default;
     //Getter
-    std::set<std::string> GetLenguaje() const;
+    std::set<std::string> GetLenguaje();
     //Metodos
     void InsertarCadena(const Cadena& cadena);
-    void InsertarAlfabeto(Alfabeto& alfabeto_parametro);
     friend std::ostream& operator<<(std::ostream& os, const Lenguaje& lenguaje);
 
   private:
   std::set<std::string> lenguaje_;
-  Alfabeto alfabeto_lenguaje_;
 };
 
 

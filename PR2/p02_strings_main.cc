@@ -26,30 +26,65 @@ int main(int argc, char* argv[]){
     return 1;
   }
 
-  std::cout << "Formato incorrecto para mas informacion use --help" << std::endl;
-
   if(argc == 4){
     int opcode = std::stoi(argv[3]);
-    std::string fichero_entrada = argv[1];
-    std::string fichero_salida = argv[2];
+    std::string entrada = argv[1];
+    std::string salida = argv[2];
     Cadena cadena;
-    cadena.LeerFichero(fichero_entrada);
-    std::ofstream fichero_leido(fichero_salida);
-    if(!fichero_leido.is_open()){
-      std::cerr << "fichero no escrito" << std::endl;
+    Alfabeto alfabeto;
+    Lenguaje lenguaje;
+
+
+    //Leer fichero
+    std::ifstream fichero_entrada(entrada);
+    if(!fichero_entrada.is_open()){
+      std::cerr << "fichero no abierto" << std::endl;
       return 1;
     }
-    switch(opcode){
-      case 1:
-        fichero_leido << cadena;
-        break;
-      default:
+    //escribir fichero
+    std::ofstream fichero_salida(salida);
+    if(!fichero_salida.is_open()){
+      std::cerr << "fichero no escrito" << std::endl;
+    }
 
-        break;
+    std::string linea;
+    while(std::getline(fichero_entrada, linea)){
+      std::stringstream ss(linea);
+      if(ss >> cadena >> alfabeto){
+        switch(opcode){
+          case 1:
+            fichero_salida << cadena << ": " <<  alfabeto << std::endl;
+            break;
+          case 2:
+            fichero_salida << cadena.LongitudCadena() << std::endl;
+            break;
+          case 3: {
+            fichero_salida << cadena << " -> " << cadena.InversaCadena() << std::endl;
+            break;
+          }
+          case 4:{
+            lenguaje = cadena.Prefijo();
+            fichero_salida << lenguaje << std::endl;
+            break;
+          }
+          case 5:{
+            lenguaje = cadena.Sufijo();
+            fichero_salida << lenguaje << std::endl;
+            break;
+          }
+          case 6:{
+            if(cadena.Validacion(alfabeto)){
+              fichero_salida << "OK" << std::endl;
+            } else {
+              fichero_salida << "ERROR" << std::endl;
+            }
+          }
+          default:
+            break;
+        }
+      }
     }
   }
 
   return 0;
 }
-
-

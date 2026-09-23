@@ -78,6 +78,12 @@ int main(int argc, char* argv[]){
             } else {
               fichero_salida << "ERROR" << std::endl;
             }
+            break;
+          }
+          case 7:{
+            int potencia = std::stoi(argv[4]);
+            fichero_salida << cadena << ": " <<  cadena.Potencia(potencia) << std::endl;
+            break;
           }
           default:
             break;

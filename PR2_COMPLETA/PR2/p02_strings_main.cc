@@ -16,9 +16,11 @@ int main(int argc, char* argv[]){
 
   if(argc == 1){
     std::cerr << "Modo de empleo: " <<  argv[0] <<  " filein.txt fileout.txt opcode " << std::endl;
+
     std::cerr << "Prueba " << argv[0] << " --help para mas informacion " << std::endl;
     return 1;
   }
+  
 
   std::string help = argv[1];
   if(argc == 2 && help == "--help"){

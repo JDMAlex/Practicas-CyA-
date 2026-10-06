@@ -35,6 +35,7 @@ void DocumentoHTML::LeerFichero(std::string fichero_entrada){
   while(std::getline(fichero_abierto, linea)){
     ++num_linea;
     ExtraerEtiqueta(linea, num_linea);
+    
   
   }
 }
@@ -79,15 +80,28 @@ std::vector<Atributo> DocumentoHTML::ExtraerAtributo(const std::string& linea){
   return Atributos_de_etiqueta;
 }
 
-void DocumentoHTML::EscribirFichero(std::string fichero_salida){
+void DocumentoHTML::DescripcionPrograma(const std::string& linea){
+  std::regex expresion_regular(R"regex(-- ([^^-]*)--)regex");
+  std::smatch coincidencia;
+  std::regex_search(linea, coincidencia, expresion_regular);
+  Descripcion_programa_ = coincidencia[1].str();
+}
+
+void DocumentoHTML::EscribirFichero(std::string fichero_salida, std::string fichero_entrada){
   std::ofstream fichero_escribir(fichero_salida);
   if(!fichero_escribir.is_open()){
     std::cerr << "fichero no escrito" << std::endl;
     return;
   }
 
-  fichero_escribir << "STRUCTURE:" << std::endl;
+  fichero_escribir << "PROGRAM: " << fichero_entrada << std::endl;
+  fichero_escribir << std::endl;
 
+  fichero_escribir << "DESCRIPCION: " << std::endl;
+  fichero_escribir << Descripcion_programa_ << std::endl;
+
+
+  fichero_escribir << "STRUCTURE:" << std::endl;
   for(size_t i = 0; i < Etiquetas_.size(); ++i){ 
     if(Etiquetas_[i].GetEtiqueta() == "html" || Etiquetas_[i].GetEtiqueta() == "head" || Etiquetas_[i].GetEtiqueta() == "body"){
       std::string nombre_etiqueta = Etiquetas_[i].GetEtiqueta();
@@ -95,7 +109,6 @@ void DocumentoHTML::EscribirFichero(std::string fichero_salida){
       Estructuras_.push_back(estructura_etiqueta);
     }
   }
-
   for(size_t i = 0; i < Estructuras_.size(); ++i){
     if(Estructuras_[i].GetEsta() == true){
       fichero_escribir << Estructuras_[i].GetNombreEstructura() << ": TRUE" << std::endl;
@@ -103,7 +116,7 @@ void DocumentoHTML::EscribirFichero(std::string fichero_salida){
       fichero_escribir << Estructuras_[i].GetNombreEstructura() << ": FALSE" << std::endl;
     }
   }
-
+  
   fichero_escribir << "TAGS:" << std::endl;
   for(size_t i = 0; i < Etiquetas_.size(); ++i){ 
     fichero_escribir << "[line " << Etiquetas_[i].GetLinea() << "] " << Etiquetas_[i].GetEtiqueta() << std::endl;

@@ -1,11 +1,13 @@
 PROGRAM: entrada.html
 
 DESCRIPCION: 
-
+Pagina principal de la asignatura de Computabilidad y Algoritmia
 STRUCTURE:
 html: TRUE
 head: TRUE
 body: TRUE
+DOCTYPE: HTML5
+
 TAGS:
 [line 3] html
 [line 4] head
@@ -47,4 +49,14 @@ target = "_blank"
 [line 21] img
 src = "logo.png"
 alt = "Logo de la universidad"
+
+COMMENTS :
+[Line 2] DESCRIPTION
+<!-- Pagina principal de la asignatura de Computabilidad y Algoritmia -->
+
+[Line 27-30]
+<!--
+    Esta seccion contiene los recursos recomendados.
+    El contenido puede cambiar durante el curso.
+-->
 

@@ -87,7 +87,6 @@ class DocumentoHTML{
     void LeerFichero(std::string fichero_entrada);
     void ExtraerEtiqueta(const std::string& linea, int num_linea);
     std::vector<Atributo> ExtraerAtributo(const std::string& linea);
-    void DescripcionPrograma(const std::string& linea);
     void EscribirFichero(std::string fichero_salida, std::string fichero_entrada);
     //
     void LeerComentarios(std::string fichero_entrada);
@@ -110,14 +109,6 @@ class DocumentoHTML{
     
 
 };
-
-
-class Comentario{
-  public:
-
-  private:
-};
-
 
 void InformacionHelp();
 

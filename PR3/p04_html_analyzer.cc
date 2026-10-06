@@ -37,7 +37,6 @@ void DocumentoHTML::LeerFichero(std::string fichero_entrada){
   while(std::getline(fichero_abierto, linea)){
     ++num_linea;
     ExtraerEtiqueta(linea, num_linea);
-    DescripcionPrograma(linea);
   
   }
 }
@@ -82,12 +81,6 @@ std::vector<Atributo> DocumentoHTML::ExtraerAtributo(const std::string& linea){
   return Atributos_de_etiqueta;
 }
 
-void DocumentoHTML::DescripcionPrograma(const std::string& linea){
-  std::regex expresion_regular(R"regex(-- ([^^-]*)--)regex");
-  std::smatch coincidencia;
-  std::regex_search(linea, coincidencia, expresion_regular);
-  Descripcion_programa_ = coincidencia[1].str();
-}
 
 void DocumentoHTML::EscribirFichero(std::string fichero_salida, std::string fichero_entrada){
   std::ofstream fichero_escribir(fichero_salida);

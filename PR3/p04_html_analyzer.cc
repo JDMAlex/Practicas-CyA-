@@ -64,7 +64,7 @@ void DocumentoHTML::ExtraerEtiqueta(const std::string& linea, int num_linea){
 }
 
 std::vector<Atributo> DocumentoHTML::ExtraerAtributo(const std::string& linea){
-  std::regex expresion_regular(R"(\b([a-zA-Z\-]+)="([^"]*")");
+  std::regex expresion_regular(R"regex(\b([\w-]+)="([^"]*)")regex");
   auto palabra_inicio = std::sregex_iterator(linea.begin(), linea.end(), expresion_regular);
   auto palabra_final = std::sregex_iterator();
   std::vector<Atributo> Atributos_de_etiqueta;
@@ -82,7 +82,7 @@ std::vector<Atributo> DocumentoHTML::ExtraerAtributo(const std::string& linea){
 
 
 //CLASE ETIQUETA
-Etiqueta::Etiqueta() : etiqueta_(" "), linea_(0), atributos_(0) {}
+Etiqueta::Etiqueta() : etiqueta_(" "), linea_(0), atributos_{} {}
 Etiqueta::Etiqueta(std::string etiqueta, int linea, std::vector<Atributo> atributos) : etiqueta_(etiqueta), linea_(linea), atributos_(atributos) {}
 std::string Etiqueta::GetEtiqueta(){
   return etiqueta_;

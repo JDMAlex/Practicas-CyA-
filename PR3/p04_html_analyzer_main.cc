@@ -22,25 +22,26 @@ int main(int argc, char* argv[]){
     std::string help = argv[1];
     if(help == "--help"){
       InformacionHelp();
+      return 0;
     }
+  }
+  if(argc < 3){
+    std::cerr << "faltan argumentos" << std::endl;
+    return 1;
   }
   std::string fichero_entrada = argv[1];
   std::string fichero_salida = argv[2];
   DocumentoHTML Documento_html;
   Documento_html.LeerFichero(fichero_entrada);
 
-/*
-  std::vector<Etiqueta> vector_prueba = Documento_html.GetEtiquetas();
-  for(int i = 0; i < vector_prueba.size(); ++i){
-    if(vector_prueba[i].GetAtributo().empty() == true){
-      std::cout << "nummero linea= " << vector_prueba[i].GetLinea() << "|" << vector_prueba[i].GetEtiqueta() << std::endl;
-    } else {
-      std::cout << "nummero linea= " << vector_prueba[i].GetLinea() << "|" << vector_prueba[i].GetEtiqueta() << std::endl;
-      for(int j = 0; j < vector_prueba[i].GetAtributo().size(); ++j){
-          std::cout << vector_prueba.GetAtributo()[j]
-      }
+  std::vector<Etiqueta> prueba = Documento_html.GetEtiquetas();
+
+  for(size_t i = 0; i < prueba.size(); ++i){
+    std::cout << "[Numero linea= " << prueba[i].GetLinea() << "] ";
+    std::cout << "[Tag= " << prueba[i].GetEtiqueta() << "] "<< std::endl;
+    for(size_t j = 0; j < prueba[i].GetAtributo().size(); ++i){
+      std::cout << prueba[i].GetAtributo()[j].GetNombreAtributo() << " = " << prueba[i].GetAtributo()[j].GetValorAtributo() << std::endl;
     }
   }
-*/
   return 0;
 }

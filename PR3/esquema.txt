@@ -1,0 +1,46 @@
+STRUCTURE:
+html: TRUE
+head: TRUE
+body: TRUE
+TAGS:
+[line 3] html
+[line 4] head
+[line 5] title
+[line 5] /title
+[line 6] /head
+[line 7] body
+[line 8] h1
+[line 8] /h1
+[line 9] p
+[line 9] /p
+[line 10] a
+[line 10] /a
+[line 12] p
+[line 12] /p
+[line 13] img
+[line 19] p
+[line 19] /p
+[line 20] a
+[line 20] /a
+[line 21] img
+[line 31] /body
+[line 32] /html
+
+ATTRIBUTES :
+[line 10] a
+href = "https://campusvirtual.ull.es"
+class = "enlace"
+
+[line 13] img
+src = "regex.png"
+alt = "Expresiones regulares"
+width = "400"
+
+[line 20] a
+href = "https://regex101.com"
+target = "_blank"
+
+[line 21] img
+src = "logo.png"
+alt = "Logo de la universidad"
+

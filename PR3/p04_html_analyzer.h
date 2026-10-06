@@ -19,6 +19,22 @@
 #include <fstream>
 #include <vector>
 
+
+class Estructura{
+  public:
+  //Constructor
+  Estructura();
+  Estructura(bool esta, std::string nombre_estructura);
+  //Getter
+  bool GetEsta();
+  std::string GetNombreEstructura();
+
+  private:
+  bool esta_;
+  std::string nombre_estructura_;
+};
+
+
 class Atributo{
   public:
   //constructor
@@ -56,9 +72,13 @@ class DocumentoHTML{
     void LeerFichero(std::string fichero_entrada);
     void ExtraerEtiqueta(const std::string& linea, int num_linea);
     std::vector<Atributo> ExtraerAtributo(const std::string& linea);
+    void EscribirFichero(std::string fichero_salida);
+    
 
   private:
     std::vector<Etiqueta> Etiquetas_;
+    std::vector<Estructura> Estructuras_;
+    
 
 };
 

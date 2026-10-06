@@ -76,10 +76,54 @@ std::vector<Atributo> DocumentoHTML::ExtraerAtributo(const std::string& linea){
     Atributo Atributo_etiqueta(nombre_atributo, valor_atributo);
     Atributos_de_etiqueta.push_back(Atributo_etiqueta);
   }
-
   return Atributos_de_etiqueta;
 }
 
+void DocumentoHTML::EscribirFichero(std::string fichero_salida){
+  std::ofstream fichero_escribir(fichero_salida);
+  if(!fichero_escribir.is_open()){
+    std::cerr << "fichero no escrito" << std::endl;
+    return;
+  }
+
+  fichero_escribir << "STRUCTURE:" << std::endl;
+
+  for(size_t i = 0; i < Etiquetas_.size(); ++i){ 
+    if(Etiquetas_[i].GetEtiqueta() == "html" || Etiquetas_[i].GetEtiqueta() == "head" || Etiquetas_[i].GetEtiqueta() == "body"){
+      std::string nombre_etiqueta = Etiquetas_[i].GetEtiqueta();
+      Estructura estructura_etiqueta(true, nombre_etiqueta);
+      Estructuras_.push_back(estructura_etiqueta);
+    }
+  }
+
+  for(size_t i = 0; i < Estructuras_.size(); ++i){
+    if(Estructuras_[i].GetEsta() == true){
+      fichero_escribir << Estructuras_[i].GetNombreEstructura() << ": TRUE" << std::endl;
+    } else {  
+      fichero_escribir << Estructuras_[i].GetNombreEstructura() << ": FALSE" << std::endl;
+    }
+  }
+
+  fichero_escribir << "TAGS:" << std::endl;
+  for(size_t i = 0; i < Etiquetas_.size(); ++i){ 
+    fichero_escribir << "[line " << Etiquetas_[i].GetLinea() << "] " << Etiquetas_[i].GetEtiqueta() << std::endl;
+  }
+  fichero_escribir << std::endl;
+
+  fichero_escribir << "ATTRIBUTES :" << std::endl;
+  for(size_t i = 0; i < Etiquetas_.size(); ++i){
+    if(Etiquetas_[i].GetAtributo().empty() == false){
+      fichero_escribir << "[line " << Etiquetas_[i].GetLinea() << "] " << Etiquetas_[i].GetEtiqueta() << std::endl;
+      for(size_t j = 0; j < Etiquetas_[i].GetAtributo().size(); ++j){
+      fichero_escribir << Etiquetas_[i].GetAtributo()[j].GetNombreAtributo() << " = " << "\"" <<Etiquetas_[i].GetAtributo()[j].GetValorAtributo() << "\"" << std::endl;
+      }
+      fichero_escribir << std::endl;
+    }
+  }
+
+
+
+}
 
 //CLASE ETIQUETA
 Etiqueta::Etiqueta() : etiqueta_(" "), linea_(0), atributos_{} {}
@@ -102,4 +146,14 @@ std::string Atributo::GetNombreAtributo(){
 }
 std::string Atributo::GetValorAtributo(){
   return valor_atributo_;
+}
+
+//CLASE ESTRUCTURA
+Estructura::Estructura() : esta_(false), nombre_estructura_(" ") {}
+Estructura::Estructura(bool esta, std::string nombre_estructura) : esta_(esta), nombre_estructura_(nombre_estructura) {}
+bool Estructura::GetEsta(){
+  return esta_;
+}
+std::string Estructura::GetNombreEstructura(){
+  return nombre_estructura_;
 }

@@ -33,15 +33,7 @@ int main(int argc, char* argv[]){
   std::string fichero_salida = argv[2];
   DocumentoHTML Documento_html;
   Documento_html.LeerFichero(fichero_entrada);
+  Documento_html.EscribirFichero(fichero_salida);
 
-  std::vector<Etiqueta> prueba = Documento_html.GetEtiquetas();
-
-  for(size_t i = 0; i < prueba.size(); ++i){
-    std::cout << "[Numero linea= " << prueba[i].GetLinea() << "] ";
-    std::cout << "[Tag= " << prueba[i].GetEtiqueta() << "] "<< std::endl;
-    for(size_t j = 0; j < prueba[i].GetAtributo().size(); ++i){
-      std::cout << prueba[i].GetAtributo()[j].GetNombreAtributo() << " = " << prueba[i].GetAtributo()[j].GetValorAtributo() << std::endl;
-    }
-  }
   return 0;
 }

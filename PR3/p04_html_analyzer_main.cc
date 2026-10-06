@@ -29,6 +29,18 @@ int main(int argc, char* argv[]){
   DocumentoHTML Documento_html;
   Documento_html.LeerFichero(fichero_entrada);
 
-
+/*
+  std::vector<Etiqueta> vector_prueba = Documento_html.GetEtiquetas();
+  for(int i = 0; i < vector_prueba.size(); ++i){
+    if(vector_prueba[i].GetAtributo().empty() == true){
+      std::cout << "nummero linea= " << vector_prueba[i].GetLinea() << "|" << vector_prueba[i].GetEtiqueta() << std::endl;
+    } else {
+      std::cout << "nummero linea= " << vector_prueba[i].GetLinea() << "|" << vector_prueba[i].GetEtiqueta() << std::endl;
+      for(int j = 0; j < vector_prueba[i].GetAtributo().size(); ++j){
+          std::cout << vector_prueba.GetAtributo()[j]
+      }
+    }
+  }
+*/
   return 0;
 }

@@ -40,42 +40,66 @@ void DocumentoHTML::LeerFichero(std::string fichero_entrada){
 }
 
 void DocumentoHTML::ExtraerEtiqueta(const std::string& linea, int num_linea){
-  std::regex etiqueta_regex(R"(<(/?)(html|head|title|body|h1|p|a|img)\b[^>]*>)");
-  std::smatch coincidencia;
+  std::regex expresion_regular(R"(<(/?)(html|head|title|body|h1|p|a|img)\b[^>]*>)");
 
-  while(std::regex_search(linea, coincidencia, etiqueta_regex)){
-    bool es_cierre =  ! coincidencia[1].str().empty();
-    std::string nombre_etiqueta = coincidencia[2].str();
-    std::cout << "[numero linea= " << num_linea << "]"; 
-    if(es_cierre == true){
-      std::cout << "/" << nombre_etiqueta << std::endl;
-    } else {
-      std::cout << nombre_etiqueta << std::endl;
-    }
-    
-  }
+  auto palabra_inicio = std::sregex_iterator(linea.begin(), linea.end(), expresion_regular);
+  auto palabra_final = std::sregex_iterator();
   
+  for(std::sregex_iterator i = palabra_inicio; i != palabra_final; ++i){
+    std::smatch coincidencia = *i;
+    bool es_cierre = !coincidencia[1].str().empty();
+    std::string etiqueta_nombre = coincidencia[2];
+    if(es_cierre == true){
+      std::string coincidencia1 = "/";
+      etiqueta_nombre = coincidencia1 + etiqueta_nombre;
+      std::vector<Atributo> vacio;
+      Etiqueta Etiqueta_extraida(etiqueta_nombre, num_linea, vacio);
+      Etiquetas_.push_back(Etiqueta_extraida);
+    } else {
+      std::vector<Atributo> atributos_extraidos = ExtraerAtributo(linea);
+      Etiqueta Etiqueta_extraida(etiqueta_nombre, num_linea, atributos_extraidos);
+      Etiquetas_.push_back(Etiqueta_extraida);
+    }
+  }
 }
 
+std::vector<Atributo> DocumentoHTML::ExtraerAtributo(const std::string& linea){
+  std::regex expresion_regular(R"(\b([a-zA-Z\-]+)="([^"]*")");
+  auto palabra_inicio = std::sregex_iterator(linea.begin(), linea.end(), expresion_regular);
+  auto palabra_final = std::sregex_iterator();
+  std::vector<Atributo> Atributos_de_etiqueta;
+
+  for(std::sregex_iterator i = palabra_inicio; i != palabra_final; ++i){
+    std::smatch coincidencia = *i;
+    std::string nombre_atributo = coincidencia[1];
+    std::string valor_atributo = coincidencia[2];
+    Atributo Atributo_etiqueta(nombre_atributo, valor_atributo);
+    Atributos_de_etiqueta.push_back(Atributo_etiqueta);
+  }
+
+  return Atributos_de_etiqueta;
+}
+
+
 //CLASE ETIQUETA
-Etiqueta::Etiqueta() : etiqueta_(" "), linea_(0) {}
-Etiqueta::Etiqueta(std::string etiqueta, int linea) : etiqueta_(etiqueta), linea_(linea) {}
+Etiqueta::Etiqueta() : etiqueta_(" "), linea_(0), atributos_(0) {}
+Etiqueta::Etiqueta(std::string etiqueta, int linea, std::vector<Atributo> atributos) : etiqueta_(etiqueta), linea_(linea), atributos_(atributos) {}
 std::string Etiqueta::GetEtiqueta(){
   return etiqueta_;
 }
 int Etiqueta::GetLinea(){
   return linea_;
 }
-Atributo Etiqueta::GetAtributo(){
-  return atributo_;
+std::vector<Atributo> Etiqueta::GetAtributo(){
+  return atributos_;
 }
 
 //CLASE ATRIBUTO
-Atributo::Atributo() : numero_atributo_(0), nombre_atributo_(" ") {}
-Atributo::Atributo(int numero_atributo, std::string nombre_atributo) : numero_atributo_(numero_atributo), nombre_atributo_(nombre_atributo) {}
+Atributo::Atributo() : nombre_atributo_(" "), valor_atributo_(" ") {}
+Atributo::Atributo(std::string nombre_atributo, std::string valor_atributo) : nombre_atributo_(nombre_atributo), valor_atributo_(valor_atributo) {}
 std::string Atributo::GetNombreAtributo(){
   return nombre_atributo_;
 }
-int Atributo::GetNumeroAtributo(){
-  return numero_atributo_;
+std::string Atributo::GetValorAtributo(){
+  return valor_atributo_;
 }

@@ -19,8 +19,34 @@
 #include <fstream>
 #include <vector>
 
-class Etiqueta;
-class Atributo;
+class Atributo{
+  public:
+  //constructor
+  Atributo();
+  Atributo(std::string nombre_atributo , std::string valor_atributo);
+  //Getter
+  std::string GetNombreAtributo();
+  std::string GetValorAtributo();
+  private:
+  std::string nombre_atributo_;
+  std::string valor_atributo_;
+};
+
+class Etiqueta{
+  public:
+    //Constructor
+    Etiqueta();
+    Etiqueta(std::string etiqueta, int linea, std::vector<Atributo> atributos);
+    //Getter
+    std::string GetEtiqueta();
+    int GetLinea();
+    std::vector<Atributo> GetAtributo();
+
+    private:
+    std::string etiqueta_;
+    int linea_;
+    std::vector<Atributo> atributos_;
+};
 
 class DocumentoHTML{
   public:
@@ -29,42 +55,13 @@ class DocumentoHTML{
     //Metodos
     void LeerFichero(std::string fichero_entrada);
     void ExtraerEtiqueta(const std::string& linea, int num_linea);
+    std::vector<Atributo> ExtraerAtributo(const std::string& linea);
 
   private:
     std::vector<Etiqueta> Etiquetas_;
 
 };
 
-
-class Etiqueta{
-  public:
-    //Constructor
-    Etiqueta();
-    Etiqueta(std::string etiqueta, int linea);
-    //Getter
-    std::string GetEtiqueta();
-    int GetLinea();
-    Atributo GetAtributo();
-
-    private:
-    std::string etiqueta_;
-    int linea_;
-    Atributo atributo_;
-};
-
-class Atributo{
-  public:
-  //constructor
-  Atributo();
-  Atributo(int numero_atributo, std::string nombre_atributo);
-  //Getter
-  std::string GetNombreAtributo();
-  int GetNumeroAtributo();
-
-  private:
-  int numero_atributo_;
-  std::string nombre_atributo_;
-};
 
 class Comentario{
   public:

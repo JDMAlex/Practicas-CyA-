@@ -19,6 +19,21 @@
 #include <fstream>
 #include <vector>
 
+class Comentario{
+  public:
+    //Constructor
+    Comentario();
+    Comentario(std::string texto, int linea_inicio, int linea_fin);
+    //Getter
+    std::string GetTexto();
+    int GetLineaInicio();
+    int GetLineaFin();
+  private:
+    std::string texto_;
+    int linea_inicio_;
+    int linea_fin_;
+};
+
 
 class Estructura{
   public:
@@ -74,12 +89,24 @@ class DocumentoHTML{
     std::vector<Atributo> ExtraerAtributo(const std::string& linea);
     void DescripcionPrograma(const std::string& linea);
     void EscribirFichero(std::string fichero_salida, std::string fichero_entrada);
+    //
+    void LeerComentarios(std::string fichero_entrada);
+    size_t DetectarDoctype(const std::string& contenido);
+    void ExtraerComentarios(const std::string& contenido, size_t fin_doctype);
+    bool TieneEtiqueta(const std::string& nombre);
+    void EscribirEstructuraExtra(std::ofstream& fichero);
+    void EscribirComentarios(std::ofstream& fichero);
     
 
   private:
     std::vector<Etiqueta> Etiquetas_;
     std::vector<Estructura> Estructuras_;
     std::string Descripcion_programa_;
+    //
+    std::vector<Comentario> Comentarios_;
+    bool doctype_ = false;
+    int linea_doctype_ = 0;
+    int indice_descripcion_ = -1;
     
 
 };

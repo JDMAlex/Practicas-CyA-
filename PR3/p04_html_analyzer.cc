@@ -15,8 +15,10 @@
 
 
 void InformacionHelp(){
-    std::cout << "hola" << std::endl;
-    return;
+  std::cout << "Uso: ./p04_html_analyzer <entrada.html> <salida.txt>" << std::endl;
+  std::cout << "  entrada.html : fichero HTML a analizar" << std::endl;
+  std::cout << "  salida.txt   : fichero donde se escribe el resumen" << std::endl;
+  return;
 }
 
 
@@ -35,7 +37,7 @@ void DocumentoHTML::LeerFichero(std::string fichero_entrada){
   while(std::getline(fichero_abierto, linea)){
     ++num_linea;
     ExtraerEtiqueta(linea, num_linea);
-    
+    DescripcionPrograma(linea);
   
   }
 }
@@ -116,6 +118,7 @@ void DocumentoHTML::EscribirFichero(std::string fichero_salida, std::string fich
       fichero_escribir << Estructuras_[i].GetNombreEstructura() << ": FALSE" << std::endl;
     }
   }
+  EscribirEstructuraExtra(fichero_escribir);
   
   fichero_escribir << "TAGS:" << std::endl;
   for(size_t i = 0; i < Etiquetas_.size(); ++i){ 
@@ -133,9 +136,104 @@ void DocumentoHTML::EscribirFichero(std::string fichero_salida, std::string fich
       fichero_escribir << std::endl;
     }
   }
+  EscribirComentarios(fichero_escribir);
 
+}
 
+static int ContarLineas(const std::string& texto, size_t hasta){
+  int contador = 0;
+  for(size_t i = 0; i < hasta && i < texto.size(); ++i){
+    if(texto[i] == '\n') ++contador;
+  }
+  return contador;
+}
 
+void DocumentoHTML::LeerComentarios(std::string fichero_entrada){
+  std::ifstream fichero_abierto(fichero_entrada);
+  if(!fichero_abierto.is_open()){
+    return;
+  }
+  std::string contenido, linea;
+  while(std::getline(fichero_abierto, linea)){
+    contenido += linea + "\n";
+  }
+  size_t fin_doctype = DetectarDoctype(contenido);
+  ExtraerComentarios(contenido, fin_doctype);
+}
+
+size_t DocumentoHTML::DetectarDoctype(const std::string& contenido){
+  std::regex expresion_regular(R"(<!DOCTYPE\s+html\s*>)", std::regex::icase);
+  std::smatch coincidencia;
+  if(std::regex_search(contenido, coincidencia, expresion_regular)){
+    doctype_ = true;
+    linea_doctype_ = ContarLineas(contenido, coincidencia.position(0)) + 1;
+    return coincidencia.position(0) + coincidencia.length(0);
+  }
+  return std::string::npos;
+}
+
+void DocumentoHTML::ExtraerComentarios(const std::string& contenido, size_t fin_doctype){
+  std::regex expresion_regular(R"(<!--([\s\S]*?)-->)");
+  auto palabra_inicio = std::sregex_iterator(contenido.begin(), contenido.end(), expresion_regular);
+  auto palabra_final = std::sregex_iterator();
+  int comentarios_antes_doctype = 0;
+
+  for(std::sregex_iterator i = palabra_inicio; i != palabra_final; ++i){
+    std::smatch coincidencia = *i;
+    size_t posicion = coincidencia.position(0);
+    std::string texto = coincidencia.str(0);
+    int linea_inicio = ContarLineas(contenido, posicion) + 1;
+    int linea_fin = linea_inicio + ContarLineas(texto, texto.size());
+    if(fin_doctype != std::string::npos && posicion < fin_doctype){
+      ++comentarios_antes_doctype;
+    }
+    Comentarios_.push_back(Comentario(texto, linea_inicio, linea_fin));
+  }
+
+  // Descripcion: comentario inmediatamente despues del DOCTYPE
+  if(fin_doctype != std::string::npos){
+    std::string resto = contenido.substr(fin_doctype);
+    std::regex expresion_descripcion(R"(^\s*<!--([\s\S]*?)-->)");
+    std::smatch coincidencia;
+    if(std::regex_search(resto, coincidencia, expresion_descripcion)){
+      indice_descripcion_ = comentarios_antes_doctype;
+      std::regex espacios(R"(^\s+|\s+$)");
+      Descripcion_programa_ = std::regex_replace(coincidencia[1].str(), espacios, std::string(""));
+    }
+  }
+}
+
+bool DocumentoHTML::TieneEtiqueta(const std::string& nombre){
+  for(size_t i = 0; i < Etiquetas_.size(); ++i){
+    if(Etiquetas_[i].GetEtiqueta() == nombre) return true;
+  }
+  return false;
+}
+
+void DocumentoHTML::EscribirEstructuraExtra(std::ofstream& fichero){
+  const std::vector<std::string> obligatorias = {"html", "head", "body"};
+  for(size_t i = 0; i < obligatorias.size(); ++i){
+    if(!TieneEtiqueta(obligatorias[i])){
+      fichero << obligatorias[i] << ": FALSE" << std::endl;
+    }
+  }
+  fichero << "DOCTYPE: " << (doctype_ ? "HTML5" : "FALSE") << std::endl;
+  fichero << std::endl;
+}
+
+void DocumentoHTML::EscribirComentarios(std::ofstream& fichero){
+  fichero << "COMMENTS :" << std::endl;
+  for(size_t i = 0; i < Comentarios_.size(); ++i){
+    int inicio = Comentarios_[i].GetLineaInicio();
+    int fin = Comentarios_[i].GetLineaFin();
+    fichero << "[Line " << inicio;
+    if(fin != inicio) fichero << "-" << fin;
+    fichero << "]";
+    if(static_cast<int>(i) == indice_descripcion_) fichero << " DESCRIPTION";
+    fichero << std::endl;
+    fichero << Comentarios_[i].GetTexto() << std::endl;
+    fichero << std::endl;
+  }
 }
 
 //CLASE ETIQUETA
@@ -169,4 +267,17 @@ bool Estructura::GetEsta(){
 }
 std::string Estructura::GetNombreEstructura(){
   return nombre_estructura_;
+}
+
+//CLASE COMENTARIO
+Comentario::Comentario() : texto_(""), linea_inicio_(0), linea_fin_(0) {}
+Comentario::Comentario(std::string texto, int linea_inicio, int linea_fin) : texto_(texto), linea_inicio_(linea_inicio), linea_fin_(linea_fin) {}
+std::string Comentario::GetTexto(){
+  return texto_;
+}
+int Comentario::GetLineaInicio(){
+  return linea_inicio_;
+}
+int Comentario::GetLineaFin(){
+  return linea_fin_;
 }

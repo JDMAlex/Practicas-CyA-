@@ -33,6 +33,7 @@ int main(int argc, char* argv[]){
   std::string fichero_salida = argv[2];
   DocumentoHTML Documento_html;
   Documento_html.LeerFichero(fichero_entrada);
+  Documento_html.LeerComentarios(fichero_entrada);
   Documento_html.EscribirFichero(fichero_salida, fichero_entrada);
 
   return 0;

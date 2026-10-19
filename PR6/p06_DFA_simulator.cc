@@ -65,11 +65,9 @@ void DFA::LeerDFA(const std::string& input_DFA){
     std::cerr << "no se abrio el DFA de forma correcta" << std::endl;
     return;
   }
-
   std::string linea_leida;
-  int numero_linea_principal;
-
-
+  int numero_linea_principal = 0;
+  std::string estado_inicial;
 
   while(std::getline(leer_DFA, linea_leida)){
     if(EsComentario(linea_leida)){
@@ -89,13 +87,12 @@ void DFA::LeerDFA(const std::string& input_DFA){
         ss >> numero_estados;
     } else if(numero_linea_principal == 3){
         std::stringstream ss(linea_leida);
-        std::string estado_inicial;
         ss >> estado_inicial;
     } else {
       std::stringstream ss(linea_leida);
       std::string estado_actual;
       bool es_aceptacion;
-      while(ss >> estado_actual >> es_aceptacion){
+      if(ss >> estado_actual >> es_aceptacion){
         std::vector<Transicion> transiciones;
         char simbolo_transicion;
         std::string estado_siguiente;
@@ -104,20 +101,27 @@ void DFA::LeerDFA(const std::string& input_DFA){
           transiciones.push_back(transicion);
         }
         Estado nuevo_estado(estado_actual, es_aceptacion, transiciones);
+        conjunto_estados_[estado_actual] = nuevo_estado;
       }
-      
+      ;
     }
   }
+  estado_inicial_ = conjunto_estados_[estado_inicial];
 }
-bool DFA::SimularCadena(const std::string& cadena) const {
 
+bool DFA::SimularCadena(const std::string& cadena) const {
+  std::cout << "Cadena a procesar: " << cadena << std::endl;
+  std::cout << "Estado actual\tEntrada\t\tSiguiente estado" << std::endl;
+  if(cadena.empty() || cadena == "&"){
+    
+  }
 }
 
 bool DFA::EsComentario(const std::string& linea) const {
   if(linea.empty()){
     return true;
   }
-  if(linea.substr(0,2) == "//" && linea.size() >= 2){
+  if( linea.size() >= 2 && linea.substr(0,2) == "//" ){
     return true;
   }
   return false;

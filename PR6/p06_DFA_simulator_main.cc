@@ -1,5 +1,5 @@
 
-#include " p06_DFA_simulator.h"
+#include "p06_DFA_simulator.h"
 
 int main(){
 

@@ -7,6 +7,8 @@
 #include<string>
 #include<vector>
 #include<fstream>
+#include<map>
+#include <sstream>
 
 class Alfabeto {
   public:
@@ -50,17 +52,18 @@ class Estado {
 class DFA {
   public:
     DFA() = default;
-    DFA(const Alfabeto& alfabeto, const Estado& estado_inicial, const std::vector<Estado>& conjunto_estados);
+    DFA(const Alfabeto& alfabeto, const Estado& estado_inicial, const std::map<std::string, Estado>& conjunto_estados);
     Alfabeto GetAlfabeto() const;
     Estado GetEstadoInicial() const;
-    std::vector<Estado> GetEstados() const;
-    void LeerDFA(const std::string& DFA);
+    std::map<std::string, Estado> GetEstados() const;
+    void LeerDFA(const std::string& input_DFA);
+    bool SimularCadena(const std::string& cadena) const;
+    bool EsComentario(const std::string& linea) const;
 
   private:
     Alfabeto alfabeto_;
     Estado estado_inicial_;
-    std::vector<Estado> conjunto_estados_;
-
+    std::map<std::string, Estado> conjunto_estados_;
 };
 
 

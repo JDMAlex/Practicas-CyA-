@@ -1,5 +1,9 @@
 #include "p06_DFA_simulator.h"
 
+void InformacionHelp(){
+  
+}
+
 //ALFABETO
 Alfabeto::Alfabeto(const std::set<char>& simbolos) : simbolos_(simbolos) {}
 std::set<char> Alfabeto::GetAlfabeto() const {
@@ -103,17 +107,33 @@ void DFA::LeerDFA(const std::string& input_DFA){
         Estado nuevo_estado(estado_actual, es_aceptacion, transiciones);
         conjunto_estados_[estado_actual] = nuevo_estado;
       }
-      ;
+      
     }
   }
   estado_inicial_ = conjunto_estados_[estado_inicial];
+  leer_DFA.close();
 }
 
-bool DFA::SimularCadena(const std::string& cadena) const {
+void DFA::SimularCadena(const std::string& cadena) const {
   std::cout << "Cadena a procesar: " << cadena << std::endl;
   std::cout << "Estado actual\tEntrada\t\tSiguiente estado" << std::endl;
-  if(cadena.empty() || cadena == "&"){
-    
+  Estado estado_actual = estado_inicial_;
+
+  for(size_t i = 0; i < cadena.size(); ++i){
+    std::cout << estado_actual.GetNombreEstado() << "\t";
+    if(alfabeto_.PerteneceAlfabeto(cadena[i])){
+      std::cout << cadena[i] << "\t";
+      std::cout << estado_actual.GetSiguienteEstado(cadena[i]) << std::endl;
+      estado_actual = conjunto_estados_.at(estado_actual.GetSiguienteEstado(cadena[i]));
+    } else {
+      std::cout << cadena[i] << "No pertenece al alfabeto" << std::endl;
+      return;
+    }
+  }
+  if(estado_actual.GetEsAceptacion()){
+    std::cout << "Cadena Entrada ACEPTADA" << std::endl;
+  } else {
+    std::cout << "Cadena Entrada RECHAZADA" << std::endl;
   }
 }
 
@@ -125,6 +145,19 @@ bool DFA::EsComentario(const std::string& linea) const {
     return true;
   }
   return false;
+}
+
+void DFA::LeerCadena(const std::string& input_cadena){
+  std::ifstream leer_cadena(input_cadena);
+  if(!leer_cadena.is_open()){
+    std::cerr << "cadena no leida" << std::endl;
+    return;
+  }
+  std::string cadena;
+  while(leer_cadena >> cadena){
+    LeerDFA(cadena);
+  }
+  leer_cadena.close();
 }
 
 

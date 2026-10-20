@@ -10,6 +10,8 @@
 #include<map>
 #include <sstream>
 
+void InformacionHelp();
+
 class Alfabeto {
   public:
     Alfabeto() = default;
@@ -57,13 +59,15 @@ class DFA {
     Estado GetEstadoInicial() const;
     std::map<std::string, Estado> GetEstados() const;
     void LeerDFA(const std::string& input_DFA);
-    bool SimularCadena(const std::string& cadena) const;
+    void SimularCadena(const std::string& cadena) const;
     bool EsComentario(const std::string& linea) const;
+    void LeerCadena(const std::string& input_cadena);
 
   private:
     Alfabeto alfabeto_;
     Estado estado_inicial_;
     std::map<std::string, Estado> conjunto_estados_;
+    
 };
 
 

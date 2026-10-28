@@ -18,13 +18,14 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include<map>
 
 void informacion_de_uso();
 
 class Alfabeto {
   public:
   Alfabeto() = default;
-  Alfabeto(std::set<char> alfabeto);
+  Alfabeto(const std::set<char>& alfabeto);
   std::set<char> GetAlfabeto();
   bool EsDelAlfabeto(char simbolo);
 
@@ -32,21 +33,16 @@ class Alfabeto {
     std::set<char> alfabeto_;
 };
 
-class Transicion {
-  public:
-
-
-  private:
-  
-
-};
-
 class Estado {
   public:
-
+  Estado() = default;
+  Estado(const std::map<char, int>& transiciones, bool aceptacion, int numero_estado);
+  std::map<char, int> GetTrancicones();
+  bool GetEsAceptacion();
+  int GetNumeroEstado();
 
   private:
-  Transicion transiciones_;
+  std::map<char, int> transiciones_;
   bool aceptacion_;
   int numero_estado_;
 
@@ -55,7 +51,11 @@ class Estado {
 class DFA {
   public:
   DFA() = default;
-  DFA();
+  DFA(const Alfabeto& alfabeto, const std::vector<Estado>& estados, int estado_inicial);
+  Alfabeto GetAlfabeto();
+  std::vector<Estado> GetEstados();
+  int GetIncial();
+
   void LeerDFA(const std::string& DFA_a_leer);
 
 

@@ -29,7 +29,7 @@ class Alfabeto {
   Alfabeto(const std::set<char>& simbolos_alfabeto);
   std::set<char> GetAlfabeto() const;
   bool EsDelAlfabeto(char simbolo_entrada);
-  void InserSimbolos(char simbolo_entrada);
+  void InsertarSimbolo(char simbolo_entrada);
 
   private:
     std::set<char> simbolos_alfabeto_;
@@ -39,7 +39,7 @@ class Estado {
   public:
   Estado() = default;
   Estado(const std::map<char, int>& transiciones, bool aceptacion, int numero_estado, int numero_transiciones);
-  std::map<char, int> GetTrancicones() const;
+  std::map<char, int> GetTransiciones() const;
   bool GetEsAceptacion() const;
   int GetNumeroEstado() const;
   int GetNumeroTransiciones() const;
@@ -58,7 +58,7 @@ class DFA {
   DFA(const Alfabeto& alfabeto, const std::vector<Estado>& estados, int estado_inicial);
   Alfabeto GetAlfabeto() const;
   std::vector<Estado> GetEstados() const;
-  int GetIncial() const;
+  int GetInicial() const;
   void LeerDFA(const std::string& DFA_a_leer);
 
   private:

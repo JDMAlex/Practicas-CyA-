@@ -30,13 +30,13 @@ bool Alfabeto::EsDelAlfabeto(char simbolo_entrada){
   return true;
 }
 
-void Alfabeto::InserSimbolos(char simbolo_entrada){
+void Alfabeto::InsertarSimbolo(char simbolo_entrada){
   simbolos_alfabeto_.insert(simbolo_entrada);
 }
 
 //ESTADO
 Estado::Estado(const std::map<char, int>& transiciones, bool aceptacion, int numero_estado, int numero_transiciones) : transiciones_(transiciones), aceptacion_(aceptacion), numero_estado_(numero_estado), numero_transiciones_(numero_transiciones) {}
-std::map<char, int> Estado::GetTrancicones() const{
+std::map<char, int> Estado::GetTransiciones() const{
   return transiciones_;
 }
 bool Estado::GetEsAceptacion() const{
@@ -60,7 +60,7 @@ Alfabeto DFA::GetAlfabeto() const{
 std::vector<Estado> DFA::GetEstados() const{
   return estados_;
 }
-int DFA::GetIncial() const{
+int DFA::GetInicial() const{
   return estado_inicial_;
 }
 
@@ -75,12 +75,12 @@ void DFA::LeerDFA(const std::string& DFA_a_leer) {
   char simbolo;
   std::string informacion_estado;
 
-  while(DFA_abierto >> linea_fichero ){
+  while(std::getline(DFA_abierto, linea_fichero) ){
     ++posicion;
     if(posicion == 1){
       std::stringstream ss(linea_fichero);
       while(ss >> simbolo){
-        alfabeto_.InserSimbolos(simbolo);
+        alfabeto_.InsertarSimbolo(simbolo);
       }
     } else if(posicion == 2){
       estados_.resize(std::stoi(linea_fichero));

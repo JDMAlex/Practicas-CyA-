@@ -81,25 +81,21 @@ void Gramatica::EscribirGramatica(const std::string& nombre_fichero) const {
     return;
   }
 
-  // 1. Símbolos terminales
   fichero << terminales_.size() << "\n";
   for (char terminal : terminales_) {
     fichero << terminal << "\n";
   }
 
-  // 2. Símbolos no terminales
   fichero << no_terminales_.size() << "\n";
   for (const auto& no_terminal : no_terminales_) {
     fichero << no_terminal << "\n";
   }
 
-  // 3. Símbolo de arranque
   fichero << arranque_ << "\n";
 
-  // 4. Reglas de producción
   fichero << producciones_.size() << "\n";
   for (const auto& prod : producciones_) {
-    fichero << prod.origen << " -> " << prod.destino << "\n";
+    fichero << prod.origen << "->" << prod.destino << "\n";
   }
 }
 

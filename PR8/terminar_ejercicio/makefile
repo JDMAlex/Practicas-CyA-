@@ -3,7 +3,7 @@
 ## Grado en Ingenieria Informatica
 ## Asignatura: Computabilidad y Algoritmia
 ## Curso: 2º
-## Practica 1: Contenedores asociativos
+## Practica 8: Gramatica Regular a partir de un DFA
 ## Autor: Alexandro Jesus Dorta Mirena
 ## Correo: alu0101802961@ull.edu.es
 ## Fecha: 

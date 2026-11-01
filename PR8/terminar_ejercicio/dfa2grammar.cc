@@ -1,19 +1,31 @@
-// Universidad de La Laguna
-// Escuela Superior de Ingenieria y Tecnologia
-// Grado en Ingenieria Informatica
-// Asignatura: Computabilidad y Algoritmia
-// Autor: Alexandro Dorta Mirena
-// Correo: alu0101802961@ull.edu.es
+/**
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Asignatura: Computabilidad y Algoritmia
+ * Curso: 2º
+ * Práctica 8: Gramática Regular a partir de un DFA
+ * 
+ * @file dfa2grammar.cc
+ * @author Alexandro Dorta Mirena (alu0101802961@ull.edu.es)
+ * @date 16/10/2026
+ * @brief Implementación de las clases Alfabeto, Estado, DFA y Gramatica.
+ */
 
 #include "dfa2grammar.h"
 
+/**
+ * @brief Imprime en pantalla las instrucciones de uso del programa.
+ */
 void informacion_de_uso() {
-  std::cout << "Programa de conversion de DFA a Gramatica Regular." << std::endl;
-  std::cout << "Uso: ./dfa2grammar input.dfa output.gra" << std::endl;
+  std::cout << "Programa de conversión de DFA a Gramática Regular.\n";
+  std::cout << "Modo de empleo: ./dfa2grammar input.dfa output.gra\n";
 }
 
-// ALFABETO
-Alfabeto::Alfabeto(const std::set<char>& simbolos_alfabeto) : simbolos_alfabeto_(simbolos_alfabeto) {}
+// ---------------------- ALFABETO ----------------------
+
+Alfabeto::Alfabeto(const std::set<char>& simbolos_alfabeto) 
+    : simbolos_alfabeto_(simbolos_alfabeto) {}
 
 std::set<char> Alfabeto::GetAlfabeto() const {
   return simbolos_alfabeto_;
@@ -27,9 +39,13 @@ void Alfabeto::InsertarSimbolo(char simbolo_entrada) {
   simbolos_alfabeto_.insert(simbolo_entrada);
 }
 
-// ESTADO
+// ----------------------- ESTADO -----------------------
+
 Estado::Estado(const std::map<char, int>& transiciones, bool aceptacion, int numero_estado, int numero_transiciones) 
-    : transiciones_(transiciones), aceptacion_(aceptacion), numero_estado_(numero_estado), numero_transiciones_(numero_transiciones) {}
+    : transiciones_(transiciones), 
+      aceptacion_(aceptacion), 
+      numero_estado_(numero_estado), 
+      numero_transiciones_(numero_transiciones) {}
 
 std::map<char, int> Estado::GetTransiciones() const {
   return transiciones_;
@@ -47,7 +63,8 @@ int Estado::GetNumeroTransiciones() const {
   return numero_transiciones_;
 }
 
-// GRAMATICA
+// ---------------------- GRAMATICA ----------------------
+
 Gramatica::Gramatica(const std::set<char>& terminales,
                      const std::set<std::string>& no_terminales,
                      const std::string& arranque,
@@ -64,29 +81,30 @@ void Gramatica::EscribirGramatica(const std::string& nombre_fichero) const {
     return;
   }
 
-  // 1. Simbolos terminales
+  // 1. Símbolos terminales
   fichero << terminales_.size() << "\n";
-  for (char t : terminales_) {
-    fichero << t << "\n";
+  for (char terminal : terminales_) {
+    fichero << terminal << "\n";
   }
 
-  // 2. Simbolos no terminales
+  // 2. Símbolos no terminales
   fichero << no_terminales_.size() << "\n";
-  for (const auto& nt : no_terminales_) {
-    fichero << nt << "\n";
+  for (const auto& no_terminal : no_terminales_) {
+    fichero << no_terminal << "\n";
   }
 
-  // 3. Simbolo de arranque
+  // 3. Símbolo de arranque
   fichero << arranque_ << "\n";
 
-  // 4. Producciones
+  // 4. Reglas de producción
   fichero << producciones_.size() << "\n";
   for (const auto& prod : producciones_) {
     fichero << prod.origen << " -> " << prod.destino << "\n";
   }
 }
 
-// DFA
+// ------------------------ DFA ------------------------
+
 DFA::DFA(const std::string& nombre_fichero_dfa) {
   LeerDFA(nombre_fichero_dfa);
 }
@@ -156,7 +174,7 @@ Gramatica DFA::ConvertToGrammar() const {
   std::set<std::string> no_terminales;
   std::vector<Produccion> producciones;
 
-  // Funcion auxiliar para formatear nombre de no terminal (ej: q0 -> Q0 o S)
+  // Función auxiliar para convertir el número de estado a símbolo no terminal (Q0, Q1...)
   auto NombreNoTerminal = [](int id_estado) -> std::string {
     return "Q" + std::to_string(id_estado);
   };
@@ -167,7 +185,7 @@ Gramatica DFA::ConvertToGrammar() const {
     std::string origen = NombreNoTerminal(estado.GetNumeroEstado());
     no_terminales.insert(origen);
 
-    // Reglas A -> aB para cada transicion delta(A, a) = B
+    // Regla delta(A, a) = B  ->  A -> aB
     for (const auto& transicion : estado.GetTransiciones()) {
       char simbolo = transicion.first;
       int destino_id = transicion.second;
@@ -176,7 +194,7 @@ Gramatica DFA::ConvertToGrammar() const {
       producciones.push_back({origen, destino});
     }
 
-    // Regla A -> & si el estado es de aceptacion
+    // Regla de aceptación A -> & (cadena vacía)
     if (estado.GetEsAceptacion()) {
       producciones.push_back({origen, "&"});
     }

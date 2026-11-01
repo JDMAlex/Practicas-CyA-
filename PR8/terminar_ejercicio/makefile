@@ -9,7 +9,6 @@
 ## Fecha: 
 ## Archivo makefile: 
 
-
 # Variables de configuración
 CXX = g++
 CXXFLAGS = -Wall -std=c++17
